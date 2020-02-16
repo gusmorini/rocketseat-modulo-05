@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FaGithubAlt, FaPlus } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
@@ -15,8 +16,6 @@ export default class Main extends Component {
   // carregar os dados do local storage
   componentDidMount() {
     const repositories = localStorage.getItem('repositories');
-
-    console.log(repositories);
 
     if (repositories) {
       this.setState({ repositories: JSON.parse(repositories) });
@@ -83,7 +82,7 @@ export default class Main extends Component {
           {repositories.map(repo => (
             <li key={repo.name}>
               <span>{repo.name}</span>
-              <a href="#">detalhes</a>
+              <Link to={`/repository/${repo.name}`}>Detalhes</Link>
             </li>
           ))}
         </List>
