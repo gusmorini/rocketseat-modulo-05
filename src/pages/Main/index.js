@@ -42,16 +42,17 @@ export default class Main extends Component {
   };
 
   handleSubmit = async e => {
-    try {
-      e.preventDefault();
-      this.setState({ loading: true });
+    e.preventDefault();
+    this.setState({ loading: true, error: false });
 
+    try {
       const { newRepo, repositories } = this.state;
 
+      if (newRepo === '')
+        throw new Error('Você precisa indicar um repositório');
+
       repositories.forEach(repo => {
-        if (repo.name === newRepo) {
-          throw new Error('Repositório duplicado');
-        }
+        if (repo.name === newRepo) throw new Error('Repositório duplicado');
       });
 
       const response = await api.get(`/repos/${newRepo}`);
@@ -63,12 +64,15 @@ export default class Main extends Component {
       this.setState({
         repositories: [...repositories, data],
         newRepo: '',
-        error: '',
-        loading: false,
       });
     } catch (err) {
-      console.log(err.message);
-      this.setState({ error: err.message, loading: false });
+      if (err.message === 'Request failed with status code 404') {
+        this.setState({ error: 'Repositório não encontrado' });
+      } else {
+        this.setState({ error: err.message });
+      }
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
