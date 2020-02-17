@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { FaSpinner } from 'react-icons/fa';
 import api from '../../services/api';
 
 import { Loading } from './styles';
@@ -46,7 +47,12 @@ export default class Repository extends Component {
     const { repository, issues, loading } = this.state;
 
     if (!loading) {
-      return <Loading>Carregando</Loading>;
+      return (
+        <Loading>
+          Carregando
+          <FaSpinner />
+        </Loading>
+      );
     }
 
     return <h1>Repository</h1>;

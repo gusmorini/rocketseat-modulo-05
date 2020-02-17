@@ -1,4 +1,14 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const Loading = styled.div`
   color: #fff;
@@ -8,4 +18,9 @@ export const Loading = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
+
+  svg {
+    animation: ${rotate} 2s linear infinite;
+    margin-left: 5px;
+  }
 `;
