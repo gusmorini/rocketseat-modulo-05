@@ -4,16 +4,20 @@ import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, Title, MsgError } from './styles';
 
 import Container from '../../components/Container';
 
 export default class Main extends Component {
-  state = {
-    newRepo: '',
-    repositories: [],
-    loading: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      newRepo: '',
+      repositories: [],
+      loading: false,
+      error: false,
+    };
+  }
 
   // carregar os dados do local storage
   componentDidMount() {
@@ -38,36 +42,47 @@ export default class Main extends Component {
   };
 
   handleSubmit = async e => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
+      this.setState({ loading: true });
 
-    this.setState({ loading: true });
+      const { newRepo, repositories } = this.state;
 
-    const { newRepo, repositories } = this.state;
+      repositories.forEach(repo => {
+        if (repo.name === newRepo) {
+          throw new Error('Repositório duplicado');
+        }
+      });
 
-    const response = await api.get(`/repos/${newRepo}`);
+      const response = await api.get(`/repos/${newRepo}`);
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const data = {
+        name: response.data.full_name,
+      };
 
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+        error: '',
+        loading: false,
+      });
+    } catch (err) {
+      console.log(err.message);
+      this.setState({ error: err.message, loading: false });
+    }
   };
 
   render() {
-    const { newRepo, loading, repositories } = this.state;
+    const { newRepo, loading, repositories, error } = this.state;
 
     return (
       <Container>
-        <h1>
+        <Title>
           <FaGithubAlt />
           Repositórios
-        </h1>
+        </Title>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} error={error}>
           <input
             type="text"
             placeholder="Adicionar Repositório"
@@ -76,13 +91,11 @@ export default class Main extends Component {
           />
 
           <SubmitButton loading={loading}>
-            {loading ? (
-              <FaSpinner color="#fff" size={14} />
-            ) : (
-                <FaPlus color="#fff" size={14} />
-              )}
+            {loading ? <FaSpinner /> : <FaPlus />}
           </SubmitButton>
         </Form>
+
+        {error && <MsgError>{error}</MsgError>}
 
         <List>
           {repositories.map(repo => (

@@ -1,5 +1,16 @@
 import styled, { keyframes, css } from 'styled-components';
 
+export const Title = styled.h1`
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  svg {
+    margin-right: 10px;
+  }
+`;
+
 export const Form = styled.form`
   margin-top: 30px;
   display: flex;
@@ -12,16 +23,32 @@ export const Form = styled.form`
     border-radius: 4px;
     font-size: 16px;
   }
+
+  ${({ error }) =>
+    error &&
+    css`
+      input {
+        border: 2px solid #f74f4f;
+      }
+    `}
+`;
+
+export const MsgError = styled.div`
+  display: flex;
+  align-items: center;
+
+  color: #f74f4f;
+  padding: 10px 0px;
 `;
 
 const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
+from {
+  transform: rotate(0deg);
+}
 
-  to {
-    transform: rotate(360deg);
-  }
+to {
+  transform: rotate(360deg);
+}
 `;
 
 export const SubmitButton = styled.button.attrs(({ loading }) => ({
@@ -29,21 +56,23 @@ export const SubmitButton = styled.button.attrs(({ loading }) => ({
   disabled: loading,
 }))`
   background: #7159c1;
-  border: 0;
-  padding: 0 20px;
+  border: none;
   margin-left: 10px;
   border-radius: 4px;
-
-  svg {
-    margin-right: 0px;
-    outline: none;
-  }
+  padding: 0px 20px;
 
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 
-  &[disabled] {
+  svg {
+    color: #fff;
+    font-size: 16px;
+    outline: 0;
+  }
+
+  & [disabled] {
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -63,7 +92,6 @@ export const List = styled.ul`
   li {
     padding: 15px 0;
     display: flex;
-
     flex-direction: now;
     justify-content: space-between;
     align-items: center;
