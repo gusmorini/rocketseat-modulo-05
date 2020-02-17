@@ -12,6 +12,15 @@ export default createGlobalStyle`
     min-height: 100%;
   }
 
+  a {
+    color: #9159c1;
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
+  }
+
   body {
     background: #7159c1;
     -webkit-font-smoothing: antialiased !important;

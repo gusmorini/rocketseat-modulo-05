@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-import { FaSpinner } from 'react-icons/fa';
+import { FaSpinner, FaChevronLeft } from 'react-icons/fa';
 import api from '../../services/api';
 
-import { Loading } from './styles';
+import { Loading, Owner, IssueList } from './styles';
+import Container from '../../components/Container';
 
 export default class Repository extends Component {
   static propTypes = {
@@ -31,7 +33,7 @@ export default class Repository extends Component {
       api.get(`/repos/${repoName}/issues`, {
         params: {
           state: 'open',
-          per_page: 5,
+          per_page: 10,
         },
       }),
     ]);
@@ -46,7 +48,7 @@ export default class Repository extends Component {
   render() {
     const { repository, issues, loading } = this.state;
 
-    if (!loading) {
+    if (loading) {
       return (
         <Loading>
           Carregando
@@ -55,6 +57,43 @@ export default class Repository extends Component {
       );
     }
 
-    return <h1>Repository</h1>;
+    return (
+      <Container>
+        <Owner>
+          <Link to="/">
+            <FaChevronLeft /> repositories
+          </Link>
+          <img src={repository.owner.avatar_url} alt={repository.owner.login} />
+          <h1>{repository.name}</h1>
+          <p>{repository.description}</p>
+        </Owner>
+
+        <IssueList>
+          {issues.map(issue => (
+            <li key={String(issue.id)}>
+              <img src={issue.user.avatar_url} alt={issue.user.login} />
+              <div>
+                <strong>
+                  <a href={issue.html_url} target="_blank">
+                    {issue.title}
+                  </a>
+                  {issue.labels.map(label => (
+                    <span key={String(label.id)}>{label.name}</span>
+                  ))}
+                </strong>
+                <p>{issue.user.login}</p>
+              </div>
+            </li>
+          ))}
+        </IssueList>
+      </Container>
+    );
   }
 }
+
+/*
+
+  dentro da key é interessante sempre passar o valor como string
+  por isso String(issue.id), converte o id number em string
+
+*/
