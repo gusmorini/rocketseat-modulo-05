@@ -21,10 +21,20 @@ export default class Repository extends Component {
     repository: {},
     issues: [],
     loading: true,
+    state: 'open',
   };
 
   async componentDidMount() {
-    const { match } = this.props;
+    const { match, location } = this.props;
+
+    if (location.search) {
+      const search = new URLSearchParams(location.search);
+      const params = search.get('state');
+
+      if (params === 'all' || params === 'closed' || params === 'open') {
+        this.setState({ state: params });
+      }
+    }
 
     const repoName = decodeURIComponent(match.params.repository);
 
@@ -32,7 +42,7 @@ export default class Repository extends Component {
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: 'open',
+          state: this.state.state,
           per_page: 10,
         },
       }),
@@ -74,9 +84,7 @@ export default class Repository extends Component {
               <img src={issue.user.avatar_url} alt={issue.user.login} />
               <div>
                 <strong>
-                  <a href={issue.html_url} target="_blank">
-                    {issue.title}
-                  </a>
+                  <a href={issue.html_url}>{issue.title}</a>
                   {issue.labels.map(label => (
                     <span key={String(label.id)}>{label.name}</span>
                   ))}

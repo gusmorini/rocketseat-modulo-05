@@ -28,7 +28,7 @@ export const Form = styled.form`
     error &&
     css`
       input {
-        border: 2px solid #f74f4f;
+        border: 1px solid #f74f4f;
       }
     `}
 `;
@@ -38,7 +38,8 @@ export const MsgError = styled.div`
   align-items: center;
 
   color: #f74f4f;
-  padding: 10px 0px;
+  padding: 15px 0px;
+  font-weight: 600;
 `;
 
 const rotate = keyframes`
