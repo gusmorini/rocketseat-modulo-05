@@ -63,6 +63,12 @@ export const IssueList = styled.ul`
   margin-top: 30px;
   border-top: 1px solid #eee;
 
+  h1 {
+    font-size: 16px;
+    color: #7159c1;
+    text-align: center;
+  }
+
   li {
     display: flex;
     padding: 15px 10px;

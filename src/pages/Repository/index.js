@@ -138,7 +138,6 @@ export default class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
-
         <Filters>
           {filters.map((f, index) => (
             <FilterButton
@@ -152,35 +151,40 @@ export default class Repository extends Component {
         </Filters>
 
         <IssueList>
-          {issues.map(issue => (
-            <li key={String(issue.id)}>
-              <img src={issue.user.avatar_url} alt={issue.user.login} />
-              <div>
-                <strong>
-                  <a href={issue.html_url}>{issue.title}</a>
-                  {issue.labels.map(label => (
-                    <span key={String(label.id)}>{label.name}</span>
-                  ))}
-                </strong>
-                <p>{issue.user.login}</p>
-              </div>
-            </li>
-          ))}
+          {issues.length > 0 ? (
+            issues.map(issue => (
+              <li key={String(issue.id)}>
+                <img src={issue.user.avatar_url} alt={issue.user.login} />
+                <div>
+                  <strong>
+                    <a href={issue.html_url}>{issue.title}</a>
+                    {issue.labels.map(label => (
+                      <span key={String(label.id)}>{label.name}</span>
+                    ))}
+                  </strong>
+                  <p>{issue.user.login}</p>
+                </div>
+              </li>
+            ))
+          ) : (
+              <h1>Nenhum issue encontrada</h1>
+            )}
         </IssueList>
-
-        <Navigation>
-          <button
-            disabled={page < 2}
-            onClick={() => this.handlePage('back')}
-            title="anterior"
-          >
-            <FaAngleLeft />
-          </button>
-          <span>Página: {page}</span>
-          <button onClick={() => this.handlePage('next')} title="próxima">
-            <FaAngleRight />
-          </button>
-        </Navigation>
+        {issues.length > 0 && (
+          <Navigation>
+            <button
+              disabled={page < 2}
+              onClick={() => this.handlePage('back')}
+              title="anterior"
+            >
+              <FaAngleLeft />
+            </button>
+            <span>Página: {page}</span>
+            <button onClick={() => this.handlePage('next')} title="próxima">
+              <FaAngleRight />
+            </button>
+          </Navigation>
+        )}
       </Container>
     );
   }
