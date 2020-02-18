@@ -96,6 +96,7 @@ export const List = styled.ul`
     flex-direction: now;
     justify-content: space-between;
     align-items: center;
+    font-weight: bold;
 
     & + li {
       border-top: 1px solid #eee;

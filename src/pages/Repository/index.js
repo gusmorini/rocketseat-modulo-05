@@ -179,7 +179,7 @@ export default class Repository extends Component {
           </button>
           <span>Página: {page}</span>
           <button
-            disabled={issues.length < 1}
+            disabled={issues.length < 1 || page >= 10}
             onClick={() => this.handlePage('next')}
             title="próxima"
           >

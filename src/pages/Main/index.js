@@ -83,7 +83,7 @@ export default class Main extends Component {
       <Container>
         <Title>
           <FaGithubAlt />
-          Repositórios
+          Repositórios Github
         </Title>
 
         <Form onSubmit={this.handleSubmit} error={error}>
