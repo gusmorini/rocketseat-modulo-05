@@ -7,9 +7,7 @@ import {
   FaChevronLeft,
   FaAngleLeft,
   FaAngleRight,
-  FaTimes,
-  FaFolderOpen,
-  FaAsterisk,
+  FaExclamation,
 } from 'react-icons/fa';
 
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -47,15 +45,13 @@ export default class Repository extends Component {
         state: 'open',
         label: 'Abertas',
         active: true,
-        icon: <FaFolderOpen />,
       },
       {
         state: 'closed',
         label: 'Fechadas',
         active: false,
-        icon: <FaTimes />,
       },
-      { state: 'all', label: 'Todas', active: false, icon: <FaAsterisk /> },
+      { state: 'all', label: 'Todas', active: false },
     ],
   };
 
@@ -167,24 +163,29 @@ export default class Repository extends Component {
               </li>
             ))
           ) : (
-              <h1>Nenhum issue encontrada</h1>
+              <h1>
+                <FaExclamation /> Nenhum issue encontrada
+            </h1>
             )}
         </IssueList>
-        {issues.length > 0 && (
-          <Navigation>
-            <button
-              disabled={page < 2}
-              onClick={() => this.handlePage('back')}
-              title="anterior"
-            >
-              <FaAngleLeft />
-            </button>
-            <span>Página: {page}</span>
-            <button onClick={() => this.handlePage('next')} title="próxima">
-              <FaAngleRight />
-            </button>
-          </Navigation>
-        )}
+
+        <Navigation>
+          <button
+            disabled={page < 2}
+            onClick={() => this.handlePage('back')}
+            title="anterior"
+          >
+            <FaAngleLeft />
+          </button>
+          <span>Página: {page}</span>
+          <button
+            disabled={issues.length < 1}
+            onClick={() => this.handlePage('next')}
+            title="próxima"
+          >
+            <FaAngleRight />
+          </button>
+        </Navigation>
       </Container>
     );
   }
