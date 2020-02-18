@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const rotate = keyframes`
   from {
@@ -113,5 +113,73 @@ export const IssueList = styled.ul`
       font-size: 12px;
       color: #999;
     }
+  }
+`;
+
+export const Navigation = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+
+  span {
+    padding: 0 30px;
+    color: #7159c1;
+    font-weight: bold;
+  }
+
+  button {
+    padding: 10px 15px;
+    background: ##eee;
+    border: none;
+    border-radius: 4px;
+    color: #999;
+    margin: 0px 2px;
+    font-size: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      color: #fff;
+      background: #7159c1;
+    }
+  }
+`;
+
+export const Filters = styled.div`
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+export const FilterButton = styled.button`
+  padding: 10px 15px;
+  background: ##eee;
+  border: none;
+  border-radius: 4px;
+  color: #999;
+  margin: 0px 2px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${({ active }) =>
+    active &&
+    css`
+      color: #fff;
+      background: #7159c1;
+    `}
+
+  svg {
+    font-size: 16px;
+    margin-right: 10px;
   }
 `;

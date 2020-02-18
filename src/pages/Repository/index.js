@@ -2,10 +2,29 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { FaSpinner, FaChevronLeft } from 'react-icons/fa';
+import {
+  FaSpinner,
+  FaChevronLeft,
+  FaAngleLeft,
+  FaAngleRight,
+  FaTimes,
+  FaFolderOpen,
+  FaAsterisk,
+} from 'react-icons/fa';
+
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faLockOpen } from '@fortawesome/free-solid-svg-icons';
+
 import api from '../../services/api';
 
-import { Loading, Owner, IssueList } from './styles';
+import {
+  Loading,
+  Owner,
+  IssueList,
+  Navigation,
+  Filters,
+  FilterButton,
+} from './styles';
 import Container from '../../components/Container';
 
 export default class Repository extends Component {
@@ -22,28 +41,70 @@ export default class Repository extends Component {
     issues: [],
     loading: true,
     state: 'open',
+    page: 1,
+    filters: [
+      {
+        state: 'open',
+        label: 'Abertas',
+        active: true,
+        icon: <FaFolderOpen />,
+      },
+      {
+        state: 'closed',
+        label: 'Fechadas',
+        active: false,
+        icon: <FaTimes />,
+      },
+      { state: 'all', label: 'Todas', active: false, icon: <FaAsterisk /> },
+    ],
   };
 
   async componentDidMount() {
-    const { match, location } = this.props;
+    this.loadIssues();
+  }
 
-    if (location.search) {
-      const search = new URLSearchParams(location.search);
-      const params = search.get('state');
+  handlePage = async action => {
+    const { page } = this.state;
 
-      if (params === 'all' || params === 'closed' || params === 'open') {
-        this.setState({ state: params });
+    if (page < 1) page = 1;
+
+    await this.setState({
+      page: action === 'back' ? page - 1 : page + 1,
+    });
+
+    this.loadIssues();
+  };
+
+  handleFilter = async filter => {
+    const { filters } = this.state;
+
+    filters.forEach(f => {
+      if (f.state === filter) {
+        f.active = true;
+      } else {
+        f.active = false;
       }
-    }
+    });
+
+    await this.setState({ filters });
+
+    this.loadIssues();
+  };
+
+  loadIssues = async () => {
+    const { match } = this.props;
 
     const repoName = decodeURIComponent(match.params.repository);
+
+    const filter = this.state.filters.find(f => f.active === true);
 
     const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
       api.get(`/repos/${repoName}/issues`, {
         params: {
-          state: this.state.state,
-          per_page: 10,
+          state: filter.state,
+          per_page: 5,
+          page: this.state.page,
         },
       }),
     ]);
@@ -53,10 +114,10 @@ export default class Repository extends Component {
       issues: issues.data,
       loading: false,
     });
-  }
+  };
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, page, filters } = this.state;
 
     if (loading) {
       return (
@@ -78,6 +139,18 @@ export default class Repository extends Component {
           <p>{repository.description}</p>
         </Owner>
 
+        <Filters>
+          {filters.map((f, index) => (
+            <FilterButton
+              key={f.state}
+              onClick={() => this.handleFilter(f.state)}
+              active={f.active}
+            >
+              {f.label}
+            </FilterButton>
+          ))}
+        </Filters>
+
         <IssueList>
           {issues.map(issue => (
             <li key={String(issue.id)}>
@@ -94,6 +167,20 @@ export default class Repository extends Component {
             </li>
           ))}
         </IssueList>
+
+        <Navigation>
+          <button
+            disabled={page < 2}
+            onClick={() => this.handlePage('back')}
+            title="anterior"
+          >
+            <FaAngleLeft />
+          </button>
+          <span>Página: {page}</span>
+          <button onClick={() => this.handlePage('next')} title="próxima">
+            <FaAngleRight />
+          </button>
+        </Navigation>
       </Container>
     );
   }
@@ -101,7 +188,7 @@ export default class Repository extends Component {
 
 /*
 
-  dentro da key é interessante sempre passar o valor como string
-  por isso String(issue.id), converte o id number em string
+      dentro da key é interessante sempre passar o valor como string
+      por isso String(issue.id), converte o id number em string
 
-*/
+    */
